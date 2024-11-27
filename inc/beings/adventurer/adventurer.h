@@ -8,39 +8,34 @@ private:
     unsigned int strength;   // increases attack power and hp
     unsigned int agility;    // increases chances of critical attack and evasion
     unsigned int intellect;  // increases magical power and mp
-    unsigned int tp;         // training points, 10 points at every level up
+    unsigned int tp;         // training points
     unsigned int experience; // gathered experience points
 
+    constexpr static unsigned int exp_per_lvl = 500;
+    constexpr static unsigned int tp_per_lvl = 10;
+
 public:
-    unsigned int GetStrength()
-    {
-        return strength;
-    }
+    unsigned int GetStrength();
+    void SetStrength(unsigned int str);
+    void AddStrength(unsigned int str);
 
-    void SetStrength(unsigned int str)
-    {
-        strength = str;
-    }
+    unsigned int GetAgility();
+    void SetAgility(unsigned int agi);
+    void AddAgility(unsigned int agi);
 
-    unsigned int GetAgility()
-    {
-        return agility;
-    }
+    unsigned int GetIntellect();
+    void SetIntellect(unsigned int intel);
+    void AddIntellect(unsigned int intel);
 
-    void SetAgility(unsigned int agi)
-    {
-        agility = agi;
-    }
+    unsigned int GetTP();
+    void SetTP(unsigned int points);
+    void AddTP(unsigned int points);
 
-    unsigned int GetIntellect()
-    {
-        return intellect;
-    }
+    unsigned int GetExperience();
+    void SetExperience(unsigned int exp);
+    void AddExperience(unsigned int exp);
 
-    void SetIntellect(unsigned int intel)
-    {
-        intellect = intel;
-    }
+    void LevelUp();
 
     Adventurer();
 };

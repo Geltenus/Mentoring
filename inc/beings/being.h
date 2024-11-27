@@ -20,6 +20,11 @@ public:
         lvl = level;
     }
 
+    void AddLvl(unsigned int level)
+    {
+        lvl += level;
+    }
+
     unsigned int GetMaxHP()
     {
         return max_hp;
@@ -30,6 +35,11 @@ public:
         max_hp = hp;
     }
 
+    void AddMaxHP(unsigned int hp)
+    {
+        max_hp += hp;
+    }
+
     unsigned int GetMaxMP()
     {
         return max_mp;
@@ -38,6 +48,11 @@ public:
     void SetMaxMP(unsigned int mp)
     {
         max_mp = mp;
+    }
+
+    void AddMaxMP(unsigned int mp)
+    {
+        max_mp += mp;
     }
 
     int GetCurrentHP()

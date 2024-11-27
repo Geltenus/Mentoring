@@ -30,6 +30,11 @@ public:
         tileType = type;
     }
 
+    Tile()
+    {
+        tileType = TileType::NIC;
+    }
+
     Tile(TileType typeInfo)
     {
         tileType = typeInfo;
