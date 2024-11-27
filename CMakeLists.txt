@@ -4,6 +4,6 @@ project(Mentoring VERSION 0.1.0 LANGUAGES C CXX)
 add_subdirectory(inc)
 add_subdirectory(src)
 
-add_executable(Mentoring main.cpp src/map/map.cpp)
+add_executable(Mentoring main.cpp src/map/map.cpp src/beings/adventurer/adventurer.cpp)
 
-target_include_directories(Mentoring PUBLIC inc/map)
+target_include_directories(Mentoring PUBLIC inc/map inc/beings inc/beings/adventurer)

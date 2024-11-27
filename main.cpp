@@ -1,4 +1,5 @@
 #include <iostream>
+#include "adventurer.h"
 #include "tile.h"
 #include "map.h"
 
@@ -11,6 +12,8 @@
 int main(int, char**) {
     char tmp;
     std::cout << "Hello, from Mentoring!\n";
+    
+    Adventurer adventurer;
 
     Map map(TileType::LAS);
 
@@ -18,6 +21,7 @@ int main(int, char**) {
 
     map.PrintMap();
 
+    std::cout << adventurer.GetStrength();
 
     std::cin >> tmp;
 }
