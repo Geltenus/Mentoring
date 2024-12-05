@@ -1,9 +1,21 @@
 cmake_minimum_required(VERSION 3.5.0)
 project(Mentoring VERSION 0.1.0 LANGUAGES C CXX)
 
-add_subdirectory(inc)
-add_subdirectory(src)
+MACRO(HEADER_DIRECTORIES return_list)
+    FILE(GLOB_RECURSE new_list *.h)
+    SET(dir_list "")
+    FOREACH(file_path ${new_list})
+        GET_FILENAME_COMPONENT(dir_path ${file_path} PATH)
+        SET(dir_list ${dir_list} ${dir_path})
+    ENDFOREACH()
+    LIST(REMOVE_DUPLICATES dir_list)
+    SET(${return_list} ${dir_list})
+ENDMACRO()
 
-add_executable(Mentoring main.cpp src/map/map.cpp src/beings/adventurer/adventurer.cpp)
+HEADER_DIRECTORIES(mentoring_inc)
 
-target_include_directories(Mentoring PUBLIC inc/map inc/beings inc/beings/adventurer)
+file(GLOB_RECURSE mentoring_src CONFIGURE_DEPENDS "src/*.cpp")
+
+add_executable(Mentoring ${mentoring_src})
+
+target_include_directories(Mentoring PUBLIC ${mentoring_inc})
