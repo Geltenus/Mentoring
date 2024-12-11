@@ -39,19 +39,32 @@ enum ColorType
     BG_Bold_Magenta,
     BG_Bold_Cyan,
     BG_Bold_Grey,
-};
 
-struct ColoredChar
-{
-    ColorType color;
-    char text;
+    MAX_COLOR
 };
 
 class Renderer
 {
-private:
-    constexpr static unsigned int x = 100;
-    constexpr static unsigned int y = 30;
-    ColoredChar screen[x][y];
 public:
+    constexpr static unsigned int X = 30;
+    constexpr static unsigned int Y = 100;
+
+    Renderer(char c = ' ');
+    void Print(void);
+    void SetChar(unsigned int x, unsigned int y, char c, ColorType color = ColorType::Default);
+    void ClearChars(void);
+
+private:
+    char filler;
+
+    struct ColoredChar
+    {
+        ColorType color;
+        char text;
+    } chars[X][Y];
+
+    std::string screen;
+    
+    void ClearScreen(bool reset_pos);
+    void ClearInputLine(void);
 };
