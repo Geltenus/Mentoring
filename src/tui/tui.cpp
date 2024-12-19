@@ -1,7 +1,7 @@
 #include "tui.h"
 #include <iostream>
 
-void TUI::AddText(Renderer &r, unsigned int x, unsigned int y, std::string s, ColorType color)
+void TUI::AddText(Renderer &r, unsigned int x, unsigned int y, const std::string &s, ColorType color)
 {
     for (unsigned int i = 0; i < s.length(); i++)
     {
@@ -19,7 +19,7 @@ void TUI::AddText(Renderer &r, unsigned int x, unsigned int y, std::string s, Co
     }
 }
 
-void TUI::AddReverseText(Renderer &r, unsigned int x, unsigned int y, std::string s, ColorType color)
+void TUI::AddReverseText(Renderer &r, unsigned int x, unsigned int y, const std::string &s, ColorType color)
 {
     for (unsigned int i = 0; i < s.length(); i++)
     {
@@ -37,7 +37,7 @@ void TUI::AddReverseText(Renderer &r, unsigned int x, unsigned int y, std::strin
     }
 }
 
-void TUI::AddWrapedText(Renderer &r, unsigned int x, unsigned int y, unsigned int w, std::string s, ColorType color)
+void TUI::AddWrapedText(Renderer &r, unsigned int x, unsigned int y, unsigned int w, const std::string &s, ColorType color)
 {
     for (unsigned int i = 0; i < s.length(); i++)
     {
