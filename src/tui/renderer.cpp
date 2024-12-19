@@ -1,14 +1,15 @@
-#include <iostream>
-#include <vector>
-#include <string>
 #include "renderer.h"
+
+#include <iostream>
+#include <string>
+#include <vector>
 
 // Special instructions
 const static std::string RESET_POSITION = "\033[H"; /* Reset cursor position */
 const static std::string NEW_LINE = "\n";           /* New line */
 
 // Colors
-const static std::string RESET = "\033[0m"; /* Reset colors to default */
+const static std::string RESET = "\033[0m"; /* Reset colors/modes to default */
 
 const static std::string BLACK = "\033[30m";   /* Black */
 const static std::string RED = "\033[31m";     /* Red */
@@ -48,144 +49,173 @@ const static std::string BG_BOLD_GREY = "\033[1m\033[47m";    /* Background Bold
 
 std::vector<std::string> colors(ColorType::MAX_COLOR);
 
+const static std::string DEFAULT_MODE = "\033[0m";       /* Reset colors/modes to default */
+const static std::string BOLD_MODE = "\033[1m";          /* Set Bold mode*/
+const static std::string DIM_MODE = "\033[2m";           /* Set Dim mode */
+const static std::string ITALIC_MODE = "\033[3m";        /* Set Italic mode */
+const static std::string UNDERLINE_MODE = "\033[4m";     /* Set Underline mode */
+const static std::string BLINKING_MODE = "\033[5m";      /* Set Blinking mode */
+const static std::string STRIKETHROUGH_MODE = "\033[9m"; /* Set Strikethrough mode*/
+
+std::vector<std::string> modes(TerminalMode::MAX_MODE);
+
 void InitRenderer()
 {
-    colors[ColorType::Default] = RESET;
-    colors[ColorType::Black] = BLACK;
-    colors[ColorType::Red] = RED;
-    colors[ColorType::Green] = GREEN;
-    colors[ColorType::Yellow] = YELLOW;
-    colors[ColorType::Blue] = BLUE;
-    colors[ColorType::Magenta] = MAGENTA;
-    colors[ColorType::Cyan] = CYAN;
-    colors[ColorType::Grey] = GREY;
+  colors[ColorType::Default] = RESET;
+  colors[ColorType::Black] = BLACK;
+  colors[ColorType::Red] = RED;
+  colors[ColorType::Green] = GREEN;
+  colors[ColorType::Yellow] = YELLOW;
+  colors[ColorType::Blue] = BLUE;
+  colors[ColorType::Magenta] = MAGENTA;
+  colors[ColorType::Cyan] = CYAN;
+  colors[ColorType::Grey] = GREY;
 
-    colors[ColorType::BG_Black] = BG_BLACK;
-    colors[ColorType::BG_Red] = BG_RED;
-    colors[ColorType::BG_Green] = BG_GREEN;
-    colors[ColorType::BG_Yellow] = BG_YELLOW;
-    colors[ColorType::BG_Blue] = BG_BLUE;
-    colors[ColorType::BG_Magenta] = BG_MAGENTA;
-    colors[ColorType::BG_Cyan] = BG_CYAN;
-    colors[ColorType::BG_Grey] = BG_GREY;
+  colors[ColorType::BG_Black] = BG_BLACK;
+  colors[ColorType::BG_Red] = BG_RED;
+  colors[ColorType::BG_Green] = BG_GREEN;
+  colors[ColorType::BG_Yellow] = BG_YELLOW;
+  colors[ColorType::BG_Blue] = BG_BLUE;
+  colors[ColorType::BG_Magenta] = BG_MAGENTA;
+  colors[ColorType::BG_Cyan] = BG_CYAN;
+  colors[ColorType::BG_Grey] = BG_GREY;
 
-    colors[ColorType::Bold_Black] = BOLD_BLACK;
-    colors[ColorType::Bold_Red] = BOLD_RED;
-    colors[ColorType::Bold_Green] = BOLD_GREEN;
-    colors[ColorType::Bold_Yellow] = BOLD_YELLOW;
-    colors[ColorType::Bold_Blue] = BOLD_BLUE;
-    colors[ColorType::Bold_Magenta] = BOLD_MAGENTA;
-    colors[ColorType::Bold_Cyan] = BOLD_CYAN;
-    colors[ColorType::Bold_Grey] = BOLD_GREY;
+  colors[ColorType::Bold_Black] = BOLD_BLACK;
+  colors[ColorType::Bold_Red] = BOLD_RED;
+  colors[ColorType::Bold_Green] = BOLD_GREEN;
+  colors[ColorType::Bold_Yellow] = BOLD_YELLOW;
+  colors[ColorType::Bold_Blue] = BOLD_BLUE;
+  colors[ColorType::Bold_Magenta] = BOLD_MAGENTA;
+  colors[ColorType::Bold_Cyan] = BOLD_CYAN;
+  colors[ColorType::Bold_Grey] = BOLD_GREY;
 
-    colors[ColorType::BG_Bold_Black] = BG_BOLD_BLACK;
-    colors[ColorType::BG_Bold_Red] = BG_BOLD_RED;
-    colors[ColorType::BG_Bold_Green] = BG_BOLD_GREEN;
-    colors[ColorType::BG_Bold_Yellow] = BG_BOLD_YELLOW;
-    colors[ColorType::BG_Bold_Blue] = BG_BOLD_BLUE;
-    colors[ColorType::BG_Bold_Magenta] = BG_BOLD_MAGENTA;
-    colors[ColorType::BG_Bold_Cyan] = BG_BOLD_CYAN;
-    colors[ColorType::BG_Bold_Grey] = BG_BOLD_GREY;
+  colors[ColorType::BG_Bold_Black] = BG_BOLD_BLACK;
+  colors[ColorType::BG_Bold_Red] = BG_BOLD_RED;
+  colors[ColorType::BG_Bold_Green] = BG_BOLD_GREEN;
+  colors[ColorType::BG_Bold_Yellow] = BG_BOLD_YELLOW;
+  colors[ColorType::BG_Bold_Blue] = BG_BOLD_BLUE;
+  colors[ColorType::BG_Bold_Magenta] = BG_BOLD_MAGENTA;
+  colors[ColorType::BG_Bold_Cyan] = BG_BOLD_CYAN;
+  colors[ColorType::BG_Bold_Grey] = BG_BOLD_GREY;
+
+  modes[TerminalMode::Default_Mode] = DEFAULT_MODE;
+  modes[TerminalMode::Bold] = BOLD_MODE;
+  modes[TerminalMode::Dim] = DIM_MODE;
+  modes[TerminalMode::Italic] = ITALIC_MODE;
+  modes[TerminalMode::Underline] = UNDERLINE_MODE;
+  modes[TerminalMode::Blinking] = BLINKING_MODE;
+  modes[TerminalMode::Strikethrough] = STRIKETHROUGH_MODE;
 }
 
-std::string SetColor(ColorType type)
-{
-    return colors[type];
-}
+std::string SetColor(ColorType type) { return colors[type]; }
+
+std::string SetMode(TerminalMode mode) { return modes[mode]; }
 
 void Renderer::ClearInputLine(void)
 {
-    std::string inputLine(Y, ' ');
-    inputLine += '\r';
+  std::string inputLine(Y, ' ');
+  inputLine += '\r';
 
-    std::cout << inputLine;
+  std::cout << inputLine;
 }
 
 void Renderer::ClearChars(void)
 {
-    for (unsigned int x = 0; x <= X; x++)
+  for (unsigned int x = 0; x <= X; x++)
+  {
+    for (unsigned int y = 0; y < Y; y++)
     {
-        for (unsigned int y = 0; y < Y; y++)
-        {
-            SetChar(x, y, filler, ColorType::Default);
-        }
+      SetChar(x, y, filler, ColorType::Default);
     }
+  }
 }
 
 void Renderer::ClearScreen(bool reset_pos)
 {
-    // Clear buffer
-    screen.clear();
+  // Clear buffer
+  screen.clear();
 
-    if (reset_pos == true)
+  if (reset_pos == true)
+  {
+    screen += RESET_POSITION;
+  }
+
+  for (unsigned int x = 0; x <= 2 * X; x++)
+  {
+    for (unsigned int y = 0; y < 2 * Y; y++)
     {
-        screen += RESET_POSITION;
+      screen += ' ';
     }
 
-    for (unsigned int x = 0; x <= 2 * X; x++)
-    {
-        for (unsigned int y = 0; y < 2 * Y; y++)
-        {
-            screen += ' ';
-        }
+    screen += NEW_LINE;
+  }
 
-        screen += NEW_LINE;
-    }
+  if (reset_pos == true)
+  {
+    screen += RESET_POSITION;
+  }
 
-    if (reset_pos == true)
-    {
-        screen += RESET_POSITION;
-    }
+  std::cout << screen;
 
-    std::cout << screen;
-
-    // Clear buffer
-    screen.clear();
+  // Clear buffer
+  screen.clear();
 }
 
-
-void Renderer::SetChar(unsigned int x, unsigned int y, char c, ColorType color)
+void Renderer::SetChar(unsigned int x, unsigned int y, char c, ColorType color, TerminalMode mode)
 {
-    if ((x < X) && (y < Y))
-    {
-        chars[x][y].text = c;
-        chars[x][y].color = color;
-    }
+  if ((x < X) && (y < Y))
+  {
+    chars[x][y].text = c;
+    chars[x][y].color = color;
+    chars[x][y].mode = mode;
+  }
 }
 
 void Renderer::Print(void)
 {
-    static ColorType last_color = Default;
+  ColorType last_color = ColorType::Default;
+  TerminalMode last_mode = TerminalMode::Default_Mode;
 
-    // ClearScreen(true);
-    screen += RESET_POSITION;
+  // ClearScreen(true);
+  screen += RESET_POSITION;
 
-    // Prepare buffer
-    for (unsigned int x = 0; x < X; x++)
+  // Prepare buffer
+  for (unsigned int x = 0; x < X; x++)
+  {
+    for (unsigned int y = 0; y < Y; y++)
     {
-        for (unsigned int y = 0; y < Y; y++)
+      if (last_color != chars[x][y].color)
+      {
+        last_color = chars[x][y].color;
+        screen += SetColor(last_color);
+      }
+
+      if (last_mode != chars[x][y].mode)
+      {
+        last_mode = chars[x][y].mode;
+        screen += SetMode(last_mode);
+        if (last_mode == TerminalMode::Default_Mode && last_color != ColorType::Default)
         {
-            if (last_color != chars[x][y].color)
-            {
-                last_color = chars[x][y].color;
-                screen += SetColor(last_color);
-            }
-
-            screen += chars[x][y].text;
+          // Set back color, as TerminalMode::Default_Mod would reset it
+          screen += SetColor(last_color);
         }
+      }
 
-        screen += NEW_LINE;
+      screen += chars[x][y].text;
     }
 
-    last_color = ColorType::Default;
+    screen += NEW_LINE;
+  }
 
-    std::cout << screen;
+  last_color = ColorType::Default;
 
-    ClearInputLine();
+  std::cout << screen;
+
+  ClearInputLine();
 }
 
 Renderer::Renderer(char c) : filler(c)
 {
-    InitRenderer();
-    ClearScreen(false);
+  InitRenderer();
+  ClearScreen(false);
 }
