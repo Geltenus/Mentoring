@@ -42,41 +42,41 @@ void TUI::AddWrapedText(Renderer &r, unsigned int x, unsigned int y, unsigned in
     for (unsigned int i = 0; i < s.length(); i++)
     {
         unsigned int x_temp = x + (i / w);
-        unsigned int y_temp = y +(i % w);
+        unsigned int y_temp = y + (i % w);
 
         r.SetChar(x_temp, y_temp, s.at(i), color);
     }
 }
 
-void TUI::AddProgressBar(Renderer &r, unsigned int x, unsigned int y, unsigned int length, double percent, char c, ColorType color)
+void TUI::AddProgressBar(Renderer &r, unsigned int x, unsigned int y, unsigned int length, double percent, char c, ColorType color, TerminalMode mode)
 {
     r.SetChar(x, y, '[', color);
     for (unsigned int i = 0; i < length; i++)
     {
         if ((static_cast<double>(i) / static_cast<double>(length)) <= percent)
         {
-            r.SetChar(x, y + i + 1, c, color);
+            r.SetChar(x, y + i + 1, c, color, mode);
         }
         else
         {
-            r.SetChar(x, y + i + 1, ' ', color);
+            r.SetChar(x, y + i + 1, ' ', color, mode);
         }
     }
     r.SetChar(x, y + length + 1, ']', color);
 }
 
-void TUI::AddReverseProgressBar(Renderer &r, unsigned int x, unsigned int y, unsigned int length, double percent, char c, ColorType color)
+void TUI::AddReverseProgressBar(Renderer &r, unsigned int x, unsigned int y, unsigned int length, double percent, char c, ColorType color, TerminalMode mode)
 {
     r.SetChar(x, y, ']', color);
     for (unsigned int i = 0; i < length; i++)
     {
         if ((static_cast<double>(i) / static_cast<double>(length)) <= percent)
         {
-            r.SetChar(x, y - i - 1, c, color);
+            r.SetChar(x, y - i - 1, c, color, mode);
         }
         else
         {
-            r.SetChar(x, y - i - 1, ' ', color);
+            r.SetChar(x, y - i - 1, ' ', color, mode);
         }
     }
     r.SetChar(x, y - length - 1, '[', color);
