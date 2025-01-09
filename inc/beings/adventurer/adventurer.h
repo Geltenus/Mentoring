@@ -32,6 +32,7 @@ public:
     void AddTP(unsigned int points);
 
     unsigned int GetExperience();
+    unsigned int GetExperienceToNextLvl();
     void SetExperience(unsigned int exp);
     void AddExperience(unsigned int exp);
 

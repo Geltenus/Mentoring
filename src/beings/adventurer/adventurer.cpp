@@ -45,7 +45,6 @@ void Adventurer::AddIntellect(unsigned int intel)
 {
     intellect += intel;
     this->AddMaxMP(intel * 3);
-
 }
 
 unsigned int Adventurer::GetTP()
@@ -68,6 +67,11 @@ unsigned int Adventurer::GetExperience()
     return experience;
 }
 
+unsigned int Adventurer::GetExperienceToNextLvl()
+{
+    return (this->GetLvl() * exp_per_lvl);
+}
+
 void Adventurer::SetExperience(unsigned int exp)
 {
     experience = exp;
@@ -77,7 +81,7 @@ void Adventurer::AddExperience(unsigned int exp)
 {
     experience += exp;
 
-    while((this->GetLvl() * exp_per_lvl) <= experience)
+    while ((this->GetLvl() * exp_per_lvl) <= experience)
     {
         experience -= (this->GetLvl() * exp_per_lvl);
         LevelUp();
@@ -89,7 +93,7 @@ void Adventurer::LevelUp()
     this->AddLvl(1);
     this->AddMaxHP(10);
     this->AddMaxMP(5);
-    
+
     AddStrength(1);
     AddAgility(1);
     AddIntellect(1);
@@ -98,6 +102,7 @@ void Adventurer::LevelUp()
 
 Adventurer::Adventurer()
 {
+    this->SetName("Hero");
     this->SetLvl(1);
     this->SetMaxHP(100);
     this->SetCurrentHP(100);
