@@ -4,7 +4,24 @@
 #include "tile.h"
 #include "map.h"
 #include "tui.h"
-#include "render_plane.h"
+#include "plane_builder.h"
+
+/**
+ * @brief Supporting function. Prepares TUI for new PLANE,
+ *        builds PLANE and finally renders it.
+ *
+ * @return Nothing
+ */
+static void RenderPlane(TUI &tui, IPlaneBuilder &plane)
+{
+    PlaneBuilder builder;
+
+    tui.ClearTUI();
+
+    builder.Build(plane);
+
+    tui.RenderTUI();
+}
 
 /**
  * @brief Main function, creates all objects and starts
@@ -18,8 +35,7 @@ int main(int, char **)
     std::string s_tmp;
     Adventurer adventurer;
     Renderer renderer;
-    TUI tui;
-    RenderPlane plane;
+    TUI tui(renderer);
 
     Map map(TileType::LAS);
     map.SetType(9, 0, TileType::OSADA_STARTOWA);
@@ -36,19 +52,19 @@ int main(int, char **)
 
     getline(std::cin, s_tmp, 'q');
 
-    RenderFightPlane fightPlane(renderer, tui, adventurer, enemy);
-    RenderWalkPlane walkPlane(renderer, tui, adventurer);
-    RenderInventoryPlane inventoryPlane(renderer, tui, adventurer);
+    FightPlaneBuilder fightPlane(tui, adventurer, enemy);
+    WalkPlaneBuilder walkPlane(tui, adventurer);
+    InventoryPlaneBuilder inventoryPlane(tui, adventurer);
 
-    plane.Render(fightPlane);
-
-    getline(std::cin, s_tmp, 'q');
-
-    plane.Render(walkPlane);
+    RenderPlane(tui, fightPlane);
 
     getline(std::cin, s_tmp, 'q');
 
-    plane.Render(inventoryPlane);
+    RenderPlane(tui, walkPlane);
+
+    getline(std::cin, s_tmp, 'q');
+
+    RenderPlane(tui, inventoryPlane);
 
     getline(std::cin, s_tmp, 'q');
 }

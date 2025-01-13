@@ -207,8 +207,6 @@ void Renderer::Print(void)
     screen += NEW_LINE;
   }
 
-  last_color = ColorType::Default;
-
   std::cout << screen;
 
   ClearInputLine();
