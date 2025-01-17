@@ -1,4 +1,5 @@
 #pragma once
+#include <string>
 
 class Being
 {
@@ -8,6 +9,7 @@ private:
     unsigned int max_mp;
     int current_hp;
     int current_mp;
+    std::string name;
 
 public:
     unsigned int GetLvl()
@@ -73,5 +75,15 @@ public:
     void SetCurrentMP(int mp)
     {
         current_mp = mp;
+    }
+
+    std::string &GetName()
+    {
+        return name;
+    }
+
+    void SetName(const std::string &n)
+    {
+        name = n;
     }
 };
