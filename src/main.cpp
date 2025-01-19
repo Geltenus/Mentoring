@@ -6,6 +6,27 @@
 #include "tui.h"
 #include "plane_builder.h"
 
+#if __linux__
+#include <ncurses.h>
+#elif _WIN32
+#include <conio.h>
+#else
+#error "Wrong OS"
+#endif
+
+/**
+ * @brief Supporting function. Checks input for specific character
+ *        to go further
+ * @param c char to wait for
+ * @return Nothing
+ */
+static void WaitForChar(char c = 'q')
+{
+    while (c != getch())
+    {
+        // Wait for the char
+    }
+}
 /**
  * @brief Supporting function. Prepares TUI for new PLANE,
  *        builds PLANE and finally renders it.
@@ -50,7 +71,7 @@ int main(int, char **)
 
     std::cout << "\033[H" << "Press q to proceed further\n";
 
-    getline(std::cin, s_tmp, 'q');
+    WaitForChar();
 
     FightPlaneBuilder fightPlane(tui, adventurer, enemy);
     WalkPlaneBuilder walkPlane(tui, adventurer);
@@ -58,13 +79,13 @@ int main(int, char **)
 
     RenderPlane(tui, fightPlane);
 
-    getline(std::cin, s_tmp, 'q');
+    WaitForChar();
 
     RenderPlane(tui, walkPlane);
 
-    getline(std::cin, s_tmp, 'q');
+    WaitForChar();
 
     RenderPlane(tui, inventoryPlane);
 
-    getline(std::cin, s_tmp, 'q');
+    WaitForChar();
 }
