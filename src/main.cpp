@@ -22,10 +22,20 @@
  */
 static void WaitForChar(char c = 'q')
 {
+#if __linux__
+    initscr(); // Initialize ncurses mode
+    cbreak();  // Disable line buffering
+    noecho();  // Do not echo input characters
+#endif
+
     while (c != getch())
     {
         // Wait for the char
     }
+
+#if __linux__
+    endwin(); // End ncurses mode
+#endif
 }
 /**
  * @brief Supporting function. Prepares TUI for new PLANE,
