@@ -5,38 +5,8 @@
 #include "map.h"
 #include "tui.h"
 #include "plane_builder.h"
+#include "world_runner.h"
 
-#if __linux__
-#include <ncurses.h>
-#elif _WIN32
-#include <conio.h>
-#else
-#error "Wrong OS"
-#endif
-
-/**
- * @brief Supporting function. Checks input for specific character
- *        to go further
- * @param c char to wait for
- * @return Nothing
- */
-static void WaitForChar(char c = 'q')
-{
-#if __linux__
-    initscr(); // Initialize ncurses mode
-    cbreak();  // Disable line buffering
-    noecho();  // Do not echo input characters
-#endif
-
-    while (c != getch())
-    {
-        // Wait for the char
-    }
-
-#if __linux__
-    endwin(); // End ncurses mode
-#endif
-}
 /**
  * @brief Supporting function. Prepares TUI for new PLANE,
  *        builds PLANE and finally renders it.
@@ -67,6 +37,7 @@ int main(int, char **)
     Adventurer adventurer;
     Renderer renderer;
     TUI tui(renderer);
+    WorldRunner wr;
 
     Map map(TileType::LAS);
     map.SetType(9, 0, TileType::OSADA_STARTOWA);
@@ -81,7 +52,7 @@ int main(int, char **)
 
     std::cout << "\033[H" << "Press q to proceed further\n";
 
-    WaitForChar();
+    wr.WaitForChar('q');
 
     FightPlaneBuilder fightPlane(tui, adventurer, enemy);
     WalkPlaneBuilder walkPlane(tui, adventurer);
@@ -89,13 +60,13 @@ int main(int, char **)
 
     RenderPlane(tui, fightPlane);
 
-    WaitForChar();
+    wr.WaitForChar('q');
 
     RenderPlane(tui, walkPlane);
 
-    WaitForChar();
+    wr.WaitForChar('q');
 
     RenderPlane(tui, inventoryPlane);
 
-    WaitForChar();
+    wr.WaitForChar();
 }
