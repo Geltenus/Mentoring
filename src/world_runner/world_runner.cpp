@@ -8,15 +8,7 @@
 #error "Wrong OS"
 #endif
 
-void WorldRunner::Notify(WorldComponent &component, char event)
-{
-}
-
-void WorldRunner::Run(void)
-{
-}
-
-char WorldRunner::WaitForChar(void)
+void UserInput::WaitForChar(void)
 {
 #if __linux__
     initscr(); // Initialize ncurses mode
@@ -30,23 +22,58 @@ char WorldRunner::WaitForChar(void)
     endwin(); // End ncurses mode
 #endif
 
-    return c;
+    _wr->Notify(*this, c);
 }
 
-void WorldRunner::WaitForChar(char c)
+void WorldRunner::Notify(WorldComponentBase &component, char event)
 {
-#if __linux__
-    initscr(); // Initialize ncurses mode
-    cbreak();  // Disable line buffering
-    noecho();  // Do not echo input characters
-#endif
-
-    while (getch() != c)
+    switch (event)
     {
-        // wait for specific key
+    case 'q':
+    {
+        _running = false;
+        break;
     }
+    case '1':
+    {
+        WalkPlaneBuilder plane(_tui, _a);
+        RenderPlane(_tui, plane);
+        break;
+    }
+    case '2':
+    {
+        FightPlaneBuilder plane(_tui, _a, _e);
+        RenderPlane(_tui, plane);
+        break;
+    }
+    case '3':
+    {
+        InventoryPlaneBuilder plane(_tui, _a);
+        RenderPlane(_tui, plane);
+        break;
+    }
+    default:
+        break;
+    }
+}
 
-#if __linux__
-    endwin(); // End ncurses mode
-#endif
+void WorldRunner::Run(void)
+{
+    _running = true;
+
+    while (_running)
+    {
+        _user_input->WaitForChar();
+    }
+}
+
+void WorldRunner::RenderPlane(TUI &tui, IPlaneBuilder &plane)
+{
+    PlaneBuilder builder;
+
+    tui.ClearTUI();
+
+    builder.Build(plane);
+
+    tui.RenderTUI();
 }

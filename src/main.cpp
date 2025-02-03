@@ -8,23 +8,6 @@
 #include "world_runner.h"
 
 /**
- * @brief Supporting function. Prepares TUI for new PLANE,
- *        builds PLANE and finally renders it.
- *
- * @return Nothing
- */
-static void RenderPlane(TUI &tui, IPlaneBuilder &plane)
-{
-    PlaneBuilder builder;
-
-    tui.ClearTUI();
-
-    builder.Build(plane);
-
-    tui.RenderTUI();
-}
-
-/**
  * @brief Main function, creates all objects and starts
  *        WorldRunner
  *
@@ -37,7 +20,7 @@ int main(int, char **)
     Adventurer adventurer;
     Renderer renderer;
     TUI tui(renderer);
-    WorldRunner wr;
+    UserInput user_input;
 
     Map map(TileType::LAS);
     map.SetType(9, 0, TileType::OSADA_STARTOWA);
@@ -50,23 +33,13 @@ int main(int, char **)
     enemy.SetMaxHP(150);
     enemy.SetMaxMP(77);
 
-    std::cout << "\033[H" << "Press q to proceed further\n";
+    WorldRunner wr(&user_input, tui, adventurer, enemy);
 
-    wr.WaitForChar('q');
+    std::cout << "\033[H" << "Press: \n"
+              << "'q' to exit\n"
+              << "'1' to render walk plane\n"
+              << "'2' to render fight plane\n"
+              << "'3' to render inventory plane\n";
 
-    FightPlaneBuilder fightPlane(tui, adventurer, enemy);
-    WalkPlaneBuilder walkPlane(tui, adventurer);
-    InventoryPlaneBuilder inventoryPlane(tui, adventurer);
-
-    RenderPlane(tui, fightPlane);
-
-    wr.WaitForChar('q');
-
-    RenderPlane(tui, walkPlane);
-
-    wr.WaitForChar('q');
-
-    RenderPlane(tui, inventoryPlane);
-
-    wr.WaitForChar();
+    wr.Run();
 }

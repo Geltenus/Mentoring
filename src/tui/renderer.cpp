@@ -209,6 +209,8 @@ void Renderer::Print(void)
 
   std::cout << screen;
 
+  screen.clear();
+
   ClearInputLine();
 }
 
