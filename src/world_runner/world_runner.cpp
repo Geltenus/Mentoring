@@ -8,6 +8,16 @@
 #error "Wrong OS"
 #endif
 
+WorldComponentType WorldComponentBase::GetType()
+{
+    return _type;
+};
+
+void WorldComponentBase::SetMediator(IWorldRunnerMediator *wr)
+{
+    _wr = wr;
+}
+
 void UserInput::WaitForChar(void)
 {
 #if __linux__
@@ -65,6 +75,11 @@ void WorldRunner::Run(void)
     {
         _user_input->WaitForChar();
     }
+}
+
+WorldRunner::WorldRunner(UserInput *user_input, TUI &tui, Adventurer &a, Being &e) : _user_input(user_input), _tui(tui), _a(a), _e(e)
+{
+    _user_input->SetMediator(this);
 }
 
 void WorldRunner::RenderPlane(TUI &tui, IPlaneBuilder &plane)

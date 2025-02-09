@@ -27,11 +27,8 @@ public:
 class WorldComponentBase
 {
 public:
-    WorldComponentType GetType() { return _type; };
-    void SetMediator(IWorldRunnerMediator *wr)
-    {
-        _wr = wr;
-    }
+    WorldComponentType GetType();
+    void SetMediator(IWorldRunnerMediator *wr);
 
 protected:
     IWorldRunnerMediator *_wr;
@@ -49,11 +46,7 @@ class WorldRunner : public IWorldRunnerMediator
 public:
     void Notify(WorldComponentBase &component, char event);
     void Run(void);
-
-    WorldRunner(UserInput *user_input, TUI &tui, Adventurer &a, Being &e) : _user_input(user_input), _tui(tui), _a(a), _e(e)
-    {
-        _user_input->SetMediator(this);
-    }
+    WorldRunner(UserInput *user_input, TUI &tui, Adventurer &a, Being &e);
 
 private:
     bool _running;
