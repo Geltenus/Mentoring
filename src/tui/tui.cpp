@@ -85,6 +85,7 @@ void TUI::AddReverseProgressBar(unsigned int x, unsigned int y, unsigned int len
 void TUI::ClearTUI()
 {
     _r.ClearChars();
+    _r.ClearBuffer();
 }
 
 void TUI::RenderTUI()

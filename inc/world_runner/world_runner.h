@@ -5,6 +5,7 @@
 #include "adventurer.h"
 #include "being.h"
 #include "plane_builder.h"
+#include "action.h"
 
 enum WorldComponentType
 {
@@ -38,7 +39,7 @@ protected:
 class UserInput : public WorldComponentBase
 {
 public:
-    void WaitForChar(void);
+    char WaitForChar(bool notify = true);
 };
 
 class WorldRunner : public IWorldRunnerMediator
@@ -56,4 +57,6 @@ private:
     Being &_e;
 
     void RenderPlane(TUI &tui, IPlaneBuilder &plane);
+    void EnterFight(void);
+    void InitFighting();
 };

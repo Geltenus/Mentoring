@@ -1,4 +1,7 @@
+#include <map>
+#include <iostream>
 #include "world_runner.h"
+#include "action.h"
 
 #if __linux__
 #include <ncurses.h>
@@ -8,7 +11,16 @@
 #error "Wrong OS"
 #endif
 
-WorldComponentType WorldComponentBase::GetType()
+std::map<char, IAction *> fightingActions;
+Action Test1('1');
+Action Test2('2');
+Action Test3('3');
+Action Test4('4');
+Action Test5('5');
+Action Test6('6');
+
+WorldComponentType
+WorldComponentBase::GetType()
 {
     return _type;
 };
@@ -18,7 +30,7 @@ void WorldComponentBase::SetMediator(IWorldRunnerMediator *wr)
     _wr = wr;
 }
 
-void UserInput::WaitForChar(void)
+char UserInput::WaitForChar(bool notify)
 {
 #if __linux__
     initscr(); // Initialize ncurses mode
@@ -31,8 +43,12 @@ void UserInput::WaitForChar(void)
 #if __linux__
     endwin(); // End ncurses mode
 #endif
+    if (true == notify)
+    {
+        _wr->Notify(*this, c);
+    }
 
-    _wr->Notify(*this, c);
+    return c;
 }
 
 void WorldRunner::Notify(WorldComponentBase &component, char event)
@@ -52,8 +68,7 @@ void WorldRunner::Notify(WorldComponentBase &component, char event)
     }
     case '2':
     {
-        FightPlaneBuilder plane(_tui, _a, _e);
-        RenderPlane(_tui, plane);
+        EnterFight();
         break;
     }
     case '3':
@@ -80,6 +95,7 @@ void WorldRunner::Run(void)
 WorldRunner::WorldRunner(UserInput *user_input, TUI &tui, Adventurer &a, Being &e) : _user_input(user_input), _tui(tui), _a(a), _e(e)
 {
     _user_input->SetMediator(this);
+    InitFighting();
 }
 
 void WorldRunner::RenderPlane(TUI &tui, IPlaneBuilder &plane)
@@ -91,4 +107,40 @@ void WorldRunner::RenderPlane(TUI &tui, IPlaneBuilder &plane)
     builder.Build(plane);
 
     tui.RenderTUI();
+}
+
+void WorldRunner::InitFighting(void)
+{
+    fightingActions['1'] = &Test1;
+    fightingActions['2'] = &Test2;
+    fightingActions['3'] = &Test3;
+    fightingActions['4'] = &Test4;
+    fightingActions['5'] = &Test5;
+    fightingActions['6'] = &Test6;
+}
+
+void WorldRunner::EnterFight(void)
+{
+    bool fighting = true;
+
+    FightPlaneBuilder plane(_tui, _a, _e);
+    RenderPlane(_tui, plane);
+
+    while (fighting)
+    {
+        char user_key = _user_input->WaitForChar(false);
+        auto it = fightingActions.find(user_key);
+
+        if (it != fightingActions.end())
+        {
+            FightPlaneBuilder plane(_tui, _a, _e);
+            RenderPlane(_tui, plane);
+            it->second->Execute(_tui);
+        }
+
+        if (user_key == 'q')
+        {
+            fighting = false;
+        }
+    }
 }
