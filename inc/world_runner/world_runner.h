@@ -29,6 +29,7 @@ class WorldComponentBase
 {
 public:
     WorldComponentType GetType();
+    void SetType(WorldComponentType type);
     void SetMediator(IWorldRunnerMediator *wr);
 
 protected:
@@ -40,6 +41,7 @@ class UserInput : public WorldComponentBase
 {
 public:
     char WaitForChar(bool notify = true);
+    UserInput();
 };
 
 class WorldRunner : public IWorldRunnerMediator
@@ -57,6 +59,10 @@ private:
     Being &_e;
 
     void RenderPlane(TUI &tui, IPlaneBuilder &plane);
-    void EnterFight(void);
-    void InitFighting();
+    void EnterStart(void);
+    void EnterWalk(void);
+    void EnterInventory(void);
+    void EnterFight(WorldComponentBase &component);
+    void InitFighting(void);
+    void EnterUserInput(void);
 };

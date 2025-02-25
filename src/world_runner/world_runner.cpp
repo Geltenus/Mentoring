@@ -19,10 +19,14 @@ Action Test4('4');
 Action Test5('5');
 Action Test6('6');
 
-WorldComponentType
-WorldComponentBase::GetType()
+WorldComponentType WorldComponentBase::GetType()
 {
     return _type;
+};
+
+void WorldComponentBase::SetType(WorldComponentType type)
+{
+    _type = type;
 };
 
 void WorldComponentBase::SetMediator(IWorldRunnerMediator *wr)
@@ -51,34 +55,75 @@ char UserInput::WaitForChar(bool notify)
     return c;
 }
 
+UserInput::UserInput()
+{
+    WorldComponentBase::_type = WorldComponentType::USER_INPUT;
+}
+
 void WorldRunner::Notify(WorldComponentBase &component, char event)
 {
-    switch (event)
-    {
-    case 'q':
+    if (event == 'q')
     {
         _running = false;
-        break;
+        return;
     }
-    case '1':
+
+    switch (component.GetType())
     {
-        WalkPlaneBuilder plane(_tui, _a);
-        RenderPlane(_tui, plane);
-        break;
-    }
-    case '2':
+    case WorldComponentType::STARTING:
     {
-        EnterFight();
-        break;
+        // TODO
     }
-    case '3':
+    break;
+
+    case WorldComponentType::WALKING:
     {
-        InventoryPlaneBuilder plane(_tui, _a);
-        RenderPlane(_tui, plane);
-        break;
+        // TODO
     }
-    default:
-        break;
+    break;
+
+    case WorldComponentType::INVENTORY:
+    {
+        // TODO
+    }
+    break;
+
+    case WorldComponentType::FIGHTING:
+    {
+        auto it = fightingActions.find(event);
+
+        if (it != fightingActions.end())
+        {
+            FightPlaneBuilder plane(_tui, _a, _e);
+            RenderPlane(_tui, plane);
+            it->second->Execute(_tui);
+        }
+    }
+    break;
+
+    case WorldComponentType::USER_INPUT:
+        switch (event)
+        {
+        case '1':
+        {
+            WalkPlaneBuilder plane(_tui, _a);
+            RenderPlane(_tui, plane);
+            break;
+        }
+        case '2':
+        {
+            EnterFight(component);
+            break;
+        }
+        case '3':
+        {
+            InventoryPlaneBuilder plane(_tui, _a);
+            RenderPlane(_tui, plane);
+            break;
+        }
+        default:
+            break;
+        }
     }
 }
 
@@ -119,28 +164,26 @@ void WorldRunner::InitFighting(void)
     fightingActions['6'] = &Test6;
 }
 
-void WorldRunner::EnterFight(void)
+void WorldRunner::EnterFight(WorldComponentBase &component)
 {
-    bool fighting = true;
+    component.SetType(WorldComponentType::FIGHTING);
 
     FightPlaneBuilder plane(_tui, _a, _e);
     RenderPlane(_tui, plane);
+}
 
-    while (fighting)
-    {
-        char user_key = _user_input->WaitForChar(false);
-        auto it = fightingActions.find(user_key);
+void WorldRunner::EnterStart(void)
+{
+}
 
-        if (it != fightingActions.end())
-        {
-            FightPlaneBuilder plane(_tui, _a, _e);
-            RenderPlane(_tui, plane);
-            it->second->Execute(_tui);
-        }
+void WorldRunner::EnterWalk(void)
+{
+}
 
-        if (user_key == 'q')
-        {
-            fighting = false;
-        }
-    }
+void WorldRunner::EnterInventory(void)
+{
+}
+
+void WorldRunner::EnterUserInput(void)
+{
 }
