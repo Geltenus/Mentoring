@@ -1,7 +1,7 @@
 #include <map>
 #include <iostream>
 #include "world_runner.h"
-#include "action.h"
+#include "fight.h"
 
 #if __linux__
 #include <ncurses.h>
@@ -10,14 +10,6 @@
 #else
 #error "Wrong OS"
 #endif
-
-std::map<char, IAction *> fightingActions;
-Action Test1('1');
-Action Test2('2');
-Action Test3('3');
-Action Test4('4');
-Action Test5('5');
-Action Test6('6');
 
 WorldComponentType WorldComponentBase::GetType()
 {
@@ -90,13 +82,11 @@ void WorldRunner::Notify(WorldComponentBase &component, char event)
 
     case WorldComponentType::FIGHTING:
     {
-        auto it = fightingActions.find(event);
+        Fight fight;
 
-        if (it != fightingActions.end())
+        if (fight.Execute(event, _tui, _a, _e))
         {
-            FightPlaneBuilder plane(_tui, _a, _e);
-            RenderPlane(_tui, plane);
-            it->second->Execute(_tui);
+            component.SetType(WorldComponentType::USER_INPUT);
         }
     }
     break;
@@ -152,16 +142,6 @@ void WorldRunner::RenderPlane(TUI &tui, IPlaneBuilder &plane)
     builder.Build(plane);
 
     tui.RenderTUI();
-}
-
-void WorldRunner::InitFighting(void)
-{
-    fightingActions['1'] = &Test1;
-    fightingActions['2'] = &Test2;
-    fightingActions['3'] = &Test3;
-    fightingActions['4'] = &Test4;
-    fightingActions['5'] = &Test5;
-    fightingActions['6'] = &Test6;
 }
 
 void WorldRunner::EnterFight(WorldComponentBase &component)

@@ -63,6 +63,5 @@ private:
     void EnterWalk(void);
     void EnterInventory(void);
     void EnterFight(WorldComponentBase &component);
-    void InitFighting(void);
     void EnterUserInput(void);
 };
