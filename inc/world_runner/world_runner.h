@@ -5,43 +5,16 @@
 #include "adventurer.h"
 #include "being.h"
 #include "plane_builder.h"
-#include "action.h"
+#include "world_component.h"
+#include "user_input.h"
 
-enum WorldComponentType
+enum WorldRunnerState
 {
-    STARTING = 0,
-    WALKING,
-    INVENTORY,
-    FIGHTING,
-    USER_INPUT
-};
-
-class WorldComponentBase;
-
-class IWorldRunnerMediator
-{
-public:
-    virtual void Notify(WorldComponentBase &component, char event) = 0;
-    virtual ~IWorldRunnerMediator() {};
-};
-
-class WorldComponentBase
-{
-public:
-    WorldComponentType GetType();
-    void SetType(WorldComponentType type);
-    void SetMediator(IWorldRunnerMediator *wr);
-
-protected:
-    IWorldRunnerMediator *_wr;
-    WorldComponentType _type;
-};
-
-class UserInput : public WorldComponentBase
-{
-public:
-    char WaitForChar(bool notify = true);
-    UserInput();
+    WRS_STARTING = 0,
+    WRS_WALKING,
+    WRS_INVENTORY,
+    WRS_FIGHTING,
+    WRS_USER_INPUT
 };
 
 class WorldRunner : public IWorldRunnerMediator
@@ -52,6 +25,7 @@ public:
     WorldRunner(UserInput *user_input, TUI &tui, Adventurer &a, Being &e);
 
 private:
+    WorldRunnerState _wr_state;
     bool _running;
     UserInput *_user_input;
     TUI &_tui;
