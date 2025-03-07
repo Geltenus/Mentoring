@@ -38,4 +38,10 @@ private:
     void EnterInventory(void);
     void EnterFight(WorldComponentBase &component);
     void EnterUserInput(void);
+
+    void CheckUserInputComponent(WorldComponentBase &component, char event);
+    void CheckUserInput(WorldComponentBase &component, char event);
+
+    void CheckFightingComponent(WorldComponentBase &component, char event);
+    void CheckFighting(WorldComponentBase &component, char event);
 };
