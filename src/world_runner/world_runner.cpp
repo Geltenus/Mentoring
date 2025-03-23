@@ -1,75 +1,159 @@
+#include <map>
+#include <iostream>
 #include "world_runner.h"
+#include "fight.h"
 
-#if __linux__
-#include <ncurses.h>
-#elif _WIN32
-#include <conio.h>
-#else
-#error "Wrong OS"
-#endif
-
-WorldComponentType WorldComponentBase::GetType()
+void WorldRunner::CheckUserInputComponent(WorldComponentBase &component, char event)
 {
-    return _type;
-};
+    switch (_wr_state)
+    {
+    case WorldRunnerState::WRS_STARTING:
+    {
+    }
+    break;
 
-void WorldComponentBase::SetMediator(IWorldRunnerMediator *wr)
-{
-    _wr = wr;
+    case WorldRunnerState::WRS_WALKING:
+    {
+    }
+    break;
+
+    case WorldRunnerState::WRS_INVENTORY:
+    {
+    }
+    break;
+
+    case WorldRunnerState::WRS_FIGHTING:
+    {
+        CheckFighting(component, event);
+    }
+    break;
+
+    case WorldRunnerState::WRS_USER_INPUT:
+    {
+        CheckUserInput(component, event);
+    }
+    break;
+
+    default:
+        break;
+    }
 }
 
-void UserInput::WaitForChar(void)
-{
-#if __linux__
-    initscr(); // Initialize ncurses mode
-    cbreak();  // Disable line buffering
-    noecho();  // Do not echo input characters
-#endif
-
-    char c = getch();
-
-#if __linux__
-    endwin(); // End ncurses mode
-#endif
-
-    _wr->Notify(*this, c);
-}
-
-void WorldRunner::Notify(WorldComponentBase &component, char event)
+void WorldRunner::CheckUserInput(WorldComponentBase &component, char event)
 {
     switch (event)
     {
-    case 'q':
-    {
-        _running = false;
-        break;
-    }
     case '1':
     {
         WalkPlaneBuilder plane(_tui, _a);
         RenderPlane(_tui, plane);
-        break;
     }
+    break;
+
     case '2':
     {
         FightPlaneBuilder plane(_tui, _a, _e);
         RenderPlane(_tui, plane);
-        break;
+        EnterFight(component);
     }
+    break;
+
     case '3':
     {
         InventoryPlaneBuilder plane(_tui, _a);
         RenderPlane(_tui, plane);
-        break;
     }
+    break;
+
     default:
         break;
+    }
+}
+
+void WorldRunner::CheckFightingComponent(WorldComponentBase &component, char event)
+{
+    switch (_wr_state)
+    {
+    case WorldRunnerState::WRS_STARTING:
+    {
+    }
+    break;
+
+    case WorldRunnerState::WRS_WALKING:
+    {
+    }
+    break;
+
+    case WorldRunnerState::WRS_INVENTORY:
+    {
+    }
+    break;
+
+    case WorldRunnerState::WRS_FIGHTING:
+    {
+    }
+    break;
+
+    case WorldRunnerState::WRS_USER_INPUT:
+    {
+    }
+    break;
+
+    default:
+        break;
+    }
+}
+
+void WorldRunner::CheckFighting(WorldComponentBase &component, char event)
+{
+    Fight fight;
+
+    fight.Execute(event, _tui, _a, _e);
+}
+
+void WorldRunner::Notify(WorldComponentBase &component, char event)
+{
+    if (event == 'q')
+    {
+        _running = false;
+        return;
+    }
+
+    switch (component.GetType())
+    {
+    case WorldComponentType::WCT_STARTING:
+    {
+        // TODO
+    }
+    break;
+
+    case WorldComponentType::WCT_WALKING:
+    {
+        // TODO
+    }
+    break;
+
+    case WorldComponentType::WCT_INVENTORY:
+    {
+        // TODO
+    }
+    break;
+
+    case WorldComponentType::WCT_FIGHTING:
+    {
+        CheckFightingComponent(component, event);
+    }
+    break;
+
+    case WorldComponentType::WCT_USER_INPUT:
+        CheckUserInputComponent(component, event);
     }
 }
 
 void WorldRunner::Run(void)
 {
     _running = true;
+    _wr_state = WorldRunnerState::WRS_USER_INPUT;
 
     while (_running)
     {
@@ -77,8 +161,9 @@ void WorldRunner::Run(void)
     }
 }
 
-WorldRunner::WorldRunner(UserInput *user_input, TUI &tui, Adventurer &a, Being &e) : _user_input(user_input), _tui(tui), _a(a), _e(e)
+WorldRunner::WorldRunner(Fight *fight, UserInput *user_input, TUI &tui, Adventurer &a, Being &e) : _fight(fight), _user_input(user_input), _tui(tui), _a(a), _e(e)
 {
+    _fight->SetMediator(this);
     _user_input->SetMediator(this);
 }
 
@@ -91,4 +176,29 @@ void WorldRunner::RenderPlane(TUI &tui, IPlaneBuilder &plane)
     builder.Build(plane);
 
     tui.RenderTUI();
+}
+
+void WorldRunner::EnterFight(WorldComponentBase &component)
+{
+    _wr_state = WorldRunnerState::WRS_FIGHTING;
+}
+
+void WorldRunner::EnterStart(void)
+{
+    _wr_state = WorldRunnerState::WRS_STARTING;
+}
+
+void WorldRunner::EnterWalk(void)
+{
+    _wr_state = WorldRunnerState::WRS_WALKING;
+}
+
+void WorldRunner::EnterInventory(void)
+{
+    _wr_state = WorldRunnerState::WRS_INVENTORY;
+}
+
+void WorldRunner::EnterUserInput(void)
+{
+    _wr_state = WorldRunnerState::WRS_USER_INPUT;
 }

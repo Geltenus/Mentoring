@@ -161,6 +161,11 @@ void Renderer::ClearScreen(bool reset_pos)
   screen.clear();
 }
 
+void Renderer::ClearBuffer(void)
+{
+  screen.clear();
+}
+
 void Renderer::SetChar(unsigned int x, unsigned int y, char c, ColorType color, TerminalMode mode)
 {
   if ((x < X) && (y < Y))
@@ -208,8 +213,6 @@ void Renderer::Print(void)
   }
 
   std::cout << screen;
-
-  screen.clear();
 
   ClearInputLine();
 }

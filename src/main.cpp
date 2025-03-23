@@ -21,6 +21,7 @@ int main(int, char **)
     Renderer renderer;
     TUI tui(renderer);
     UserInput user_input;
+    Fight fight;
 
     Map map(TileType::LAS);
     map.SetType(9, 0, TileType::OSADA_STARTOWA);
@@ -33,7 +34,7 @@ int main(int, char **)
     enemy.SetMaxHP(150);
     enemy.SetMaxMP(77);
 
-    WorldRunner wr(&user_input, tui, adventurer, enemy);
+    WorldRunner wr(&fight, &user_input, tui, adventurer, enemy);
 
     std::cout << "\033[H" << "Press: \n"
               << "'q' to exit\n"

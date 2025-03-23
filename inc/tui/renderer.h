@@ -70,6 +70,7 @@ public:
                ColorType color = ColorType::Default,
                TerminalMode mode = TerminalMode::Default_Mode);
   void ClearChars(void);
+  void ClearBuffer(void);
 
 private:
   char filler;
