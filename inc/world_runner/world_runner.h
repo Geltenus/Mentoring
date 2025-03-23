@@ -7,6 +7,7 @@
 #include "plane_builder.h"
 #include "world_component.h"
 #include "user_input.h"
+#include "fight.h"
 
 enum WorldRunnerState
 {
@@ -22,12 +23,13 @@ class WorldRunner : public IWorldRunnerMediator
 public:
     void Notify(WorldComponentBase &component, char event);
     void Run(void);
-    WorldRunner(UserInput *user_input, TUI &tui, Adventurer &a, Being &e);
+    WorldRunner(Fight *fight, UserInput *user_input, TUI &tui, Adventurer &a, Being &e);
 
 private:
     WorldRunnerState _wr_state;
     bool _running;
     UserInput *_user_input;
+    Fight *_fight;
     TUI &_tui;
     Adventurer &_a;
     Being &_e;

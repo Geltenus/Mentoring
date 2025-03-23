@@ -161,8 +161,9 @@ void WorldRunner::Run(void)
     }
 }
 
-WorldRunner::WorldRunner(UserInput *user_input, TUI &tui, Adventurer &a, Being &e) : _user_input(user_input), _tui(tui), _a(a), _e(e)
+WorldRunner::WorldRunner(Fight *fight, UserInput *user_input, TUI &tui, Adventurer &a, Being &e) : _fight(fight), _user_input(user_input), _tui(tui), _a(a), _e(e)
 {
+    _fight->SetMediator(this);
     _user_input->SetMediator(this);
 }
 

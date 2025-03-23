@@ -16,6 +16,8 @@ Action Test6('6');
 
 Fight::Fight()
 {
+    WorldComponentBase::_type = WorldComponentType::WCT_FIGHTING;
+
     fightingActions['1'] = &Test1;
     fightingActions['2'] = &Test2;
     fightingActions['3'] = &Test3;

@@ -1,12 +1,13 @@
 #pragma once
 
+#include "world_component.h"
 #include "action.h"
 #include "renderer.h"
 #include "tui.h"
 #include "adventurer.h"
 #include "being.h"
 
-class Fight
+class Fight : public WorldComponentBase
 {
 public:
     Fight();
